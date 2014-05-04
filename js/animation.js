@@ -4,7 +4,7 @@ var fieldBorder = 8;
 
 var fieldTileCount = 5;
 var startTile = 2;
-var animationSpeed = 250;
+var animationSpeed = 150;
 
 var tileElems = [];
 var score = 0;
