@@ -301,13 +301,17 @@ function hasNextMove() {
             if(tiles[x][y].value == 2048) {
                 has2048 = true;
             }
-            if(x+1 < fieldTileCount && tiles[x][y].value != 0 && !tiles[x][y].obstacle) {
-                if(!tiles[x+1][y].obstacle && (tiles[x][y].value == tiles[x+1][y].value || tiles[x+1][y].value == 0)) {
-                    hasMove = true;
-                }
-            }
-            if(y+1 < fieldTileCount && tiles[x][y].value != 0 && !tiles[x][y].obstacle) {
-                if(!tiles[x][y+1].obstacle && (tiles[x][y].value == tiles[x][y+1].value || tiles[x][y+1].value == 0)) {
+
+            if(tiles[x][y].value == 0 || tiles[x][y].obstacle) continue;
+
+            var dx = [1, -1, 0, 0];
+            var dy = [0, 0, 1, -1];
+            for(var k = 0; k < 4; k++) {
+                var nx = x + dx[k];
+                var ny = y + dy[k];
+                if(nx < 0 || ny < 0 || nx >= fieldTileCount || ny >= fieldTileCount) continue;
+                if(tiles[nx][ny].obstacle) continue;
+                if(tiles[nx][ny].value == 0 || tiles[nx][ny].value == tiles[x][y].value) {
                     hasMove = true;
                 }
             }
