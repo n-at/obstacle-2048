@@ -276,31 +276,27 @@ function addScore(value) {
 function hasNextMove() {
     var tiles = mapTiles();
     var has2048 = false;
-    var hasEmpty = false;
     var hasMove = false;
 
     for(var x = 0; x < fieldTileCount; x++) {
         for(var y = 0; y < fieldTileCount; y++) {
-            if(tiles[x][y].value == 0) {
-                hasEmpty = true;
-            }
             if(tiles[x][y].value == 2048) {
                 has2048 = true;
             }
-            if(x+1 < fieldTileCount && tiles[x][y].value != 0) {
-                if(tiles[x][y].value == tiles[x+1][y].value) {
+            if(x+1 < fieldTileCount && tiles[x][y].value != 0 && !tiles[x][y].obstacle) {
+                if(!tiles[x+1][y].obstacle && (tiles[x][y].value == tiles[x+1][y].value || tiles[x+1][y].value == 0)) {
                     hasMove = true;
                 }
             }
-            if(y+1 < fieldTileCount && tiles[x][y].value != 0) {
-                if(tiles[x][y].value == tiles[x][y+1].value) {
+            if(y+1 < fieldTileCount && tiles[x][y].value != 0 && !tiles[x][y].obstacle) {
+                if(!tiles[x][y+1].obstacle && (tiles[x][y].value == tiles[x][y+1].value || tiles[x][y+1].value == 0)) {
                     hasMove = true;
                 }
             }
         }
     }
     if(has2048) return false; //win
-    return hasEmpty || hasMove;
+    return  hasMove;
 }
 
 function endGame() {
