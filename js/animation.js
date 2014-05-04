@@ -125,9 +125,10 @@ function nextTurn(direction) {
     newTile();
 
     //check for end of the game
-    if(!hasNextMove()) {
+    var gameResult = hasNextMove();
+    if(gameResult != 'continue') {
         gameOn = false;
-        endGame();
+        endGame(gameResult == 'win');
     }
 }
 
@@ -200,7 +201,6 @@ function newGame() {
 
     newTile();
     newTile();
-
 }
 
 //shift tiles
@@ -233,18 +233,18 @@ function shiftUp(rotations) {
                     }
                 }
 
-                //push up
-                if(limit >= 0 && (tiles[x][limit].value != tiles[x][y].value ||
-                                    tiles[x][limit].merged ||
-                                    tiles[x][limit].obstacle)
-                  ) //cannot merge?
-                    limit++;
+                //check limit
+                if(limit >= 0) {
+                    //cannot merge?
+                    if(tiles[x][limit].value != tiles[x][y].value || tiles[x][limit].merged || tiles[x][limit].obstacle)
+                        limit++;
+                }
                 if(limit == -1)
                     limit = 0;
                 if(limit == y)
                     continue;
 
-                if(tiles[x][limit].value) {
+                if(tiles[x][limit].value) { //merge
                     tiles[x][limit].merged = true;
                     scoreToAdd += tiles[x][limit].value * 2;
                 }
@@ -306,27 +306,14 @@ function hasNextMove() {
             }
         }
     }
-    if(has2048) return false; //win
-    return  hasMove;
+    if(has2048) return 'win';
+    return  hasMove ? 'continue' : 'full';
 }
 
-function endGame() {
-    //win?
-    var tiles = mapTiles();
-    var has2048 = false;
-    for(var x = 0; x < fieldTileCount; x++) {
-        for(var y = 0; y < fieldTileCount; y++) {
-            if(tiles[x][y].value == 2048) {
-                has2048 = true;
-            }
-        }
-    }
-
+function endGame(win) {
     var message = $('<span></span>').addClass('end-game-message').text('Game over');
-    if(has2048) {
+    if(win)
         message.addClass('win-message').text('You win!');
-    }
-
     $('<div></div>').addClass('end-game-screen').appendTo('.tile-container').append(message);
 }
 
