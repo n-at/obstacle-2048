@@ -44,7 +44,7 @@ function keyPressed(e) {
         65: 'Left'
     };
     var mapped = map[e.which];
-    if(mapped != undefined) {
+    if(mapped !== undefined) {
         e.preventDefault();
         nextTurn(map[e.keyCode]);
     }
@@ -72,11 +72,12 @@ function nextTurn(direction) {
     if(!turn) return;
 
     //do animations and collect stacks of tiles
+    var x, y, i, elem;
     var tiles = emptyTileArray();
-    for(var i = 0; i < tileElems.length; i++) {
-        var elem = tileElems[i];
-        var x = elem.data('x');
-        var y = elem.data('y');
+    for(i = 0; i < tileElems.length; i++) {
+        elem = tileElems[i];
+        x = elem.data('x');
+        y = elem.data('y');
 
         //animate tile's shift
         elem.animate({
@@ -91,6 +92,7 @@ function nextTurn(direction) {
     }
 
     //process stacks
+    var removeElement = function() { $(this).remove(); };
     for(x = 0; x < fieldTileCount; x++) {
         for(y = 0; y < fieldTileCount; y++) {
             if(tiles[x][y].elem && tiles[x][y].elem.length > 1) {
@@ -100,9 +102,7 @@ function nextTurn(direction) {
                     sum += elem.data('val');
 
                     //remove tile
-                    elem.fadeOut(animationSpeed, function(){
-                        $(this).remove();
-                    });
+                    elem.fadeOut(animationSpeed, removeElement());
                 }
                 //create new tile with sum
                 var sumTile = tileShowUp(x, y, sum);
@@ -234,20 +234,20 @@ function shiftUp(rotations) {
 
     for(var x = 0; x < fieldTileCount; x++) {
         for(var y = 0; y < fieldTileCount; y++) {
-            if(tiles[x][y].value != 0 && !tiles[x][y].obstacle) {
+            if(tiles[x][y].value !== 0 && !tiles[x][y].obstacle) {
                 //find limit
                 var limit = -1;
                 for(var endY = y-1; endY >= 0;  endY--) {
-                    if(tiles[x][endY].value != 0 || tiles[x][endY].obstacle) {
+                    if(tiles[x][endY].value !== 0 || tiles[x][endY].obstacle) {
                         limit = endY;
                         break;
                     }
                 }
 
                 //push up
-                if(limit >= 0 && (tiles[x][limit].value != tiles[x][y].value
-                                    || tiles[x][limit].merged
-                                    || tiles[x][limit].obstacle)
+                if(limit >= 0 && (tiles[x][limit].value != tiles[x][y].value ||
+                                    tiles[x][limit].merged ||
+                                    tiles[x][limit].obstacle)
                   ) //cannot merge?
                     limit++;
                 if(limit == -1)
@@ -286,7 +286,7 @@ function shiftUp(rotations) {
 }
 
 function addScore(value) {
-    if(value == 0) return;
+    if(value === 0) return;
     score += value;
     $('.score-value').text(score);
 }
@@ -302,7 +302,7 @@ function hasNextMove() {
                 has2048 = true;
             }
 
-            if(tiles[x][y].value == 0 || tiles[x][y].obstacle) continue;
+            if(tiles[x][y].value === 0 || tiles[x][y].obstacle) continue;
 
             var dx = [1, -1, 0, 0];
             var dy = [0, 0, 1, -1];
@@ -311,7 +311,7 @@ function hasNextMove() {
                 var ny = y + dy[k];
                 if(nx < 0 || ny < 0 || nx >= fieldTileCount || ny >= fieldTileCount) continue;
                 if(tiles[nx][ny].obstacle) continue;
-                if(tiles[nx][ny].value == 0 || tiles[nx][ny].value == tiles[x][y].value) {
+                if(tiles[nx][ny].value === 0 || tiles[nx][ny].value == tiles[x][y].value) {
                     hasMove = true;
                 }
             }
