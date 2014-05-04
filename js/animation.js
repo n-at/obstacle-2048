@@ -12,7 +12,6 @@ var gameOn = false;
 
 $(function() {
    newGame();
-
     //bind events
     $('body').keypress(keyPressed);
     $('.new-game').click(newGame);
@@ -50,11 +49,13 @@ function nextTurn(direction) {
         var x = elem.data('x');
         var y = elem.data('y');
 
+        //animate tile's shift
         elem.animate({
             left: calcPosX(x),
             top: calcPosY(y)
         }, animationSpeed);
 
+        //push the tile to stack
         if(!tiles[x][y].elem)
             tiles[x][y].elem = [];
         tiles[x][y].elem.push(elem);
@@ -93,8 +94,8 @@ function nextTurn(direction) {
 
     //rebuild tiles array
     var newTiles = [];
-    for(x = 0; x < 5; x++) {
-        for(y = 0; y < 5; y++) {
+    for(x = 0; x < fieldTileCount; x++) {
+        for(y = 0; y < fieldTileCount; y++) {
             if(tiles[x][y].elem && tiles[x][y].elem.length > 0) {
                 newTiles.push(tiles[x][y].elem[0]);
             }
@@ -173,6 +174,7 @@ function newGame() {
     newTile();
 }
 
+//shift tiles
 function shiftUp(rotations) {
     var turn = false;
     var scoreToAdd = 0;
@@ -203,7 +205,7 @@ function shiftUp(rotations) {
                 }
 
                 //push up
-                if(limit >= 0 && (tiles[x][limit].value != tiles[x][y].value || tiles[x][limit].combined))
+                if(limit >= 0 && (tiles[x][limit].value != tiles[x][y].value || tiles[x][limit].merged)) //cannot merge?
                     limit++;
                 if(limit == -1)
                     limit = 0;
@@ -211,7 +213,7 @@ function shiftUp(rotations) {
                     continue;
 
                 if(tiles[x][limit].value) {
-                    tiles[x][limit].combined = true;
+                    tiles[x][limit].merged = true;
                     scoreToAdd += tiles[x][limit].value * 2;
                 }
                 tiles[x][limit].value += tiles[x][y].value;
@@ -232,7 +234,6 @@ function shiftUp(rotations) {
                         tiles[x][y].elem.data('x', fieldTileCount - limit - 1);
                         break;
                 }
-
                 turn = true;
             }
         }
@@ -242,9 +243,7 @@ function shiftUp(rotations) {
 }
 
 function addScore(value) {
-    if(value == 0) {
-        return;
-    }
+    if(value == 0) return;
     score += value;
     $('.score-value').text(score);
 }
@@ -332,10 +331,4 @@ function mapTiles() {
         };
     }
     return tiles;
-}
-
-function swap(a, b) {
-    var t = a;
-    a = b;
-    b = t;
 }
