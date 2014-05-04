@@ -5,6 +5,7 @@ var fieldBorder = 8;
 var fieldTileCount = 5;
 var startTile = 2;
 var animationSpeed = 150;
+var obstaclesCount = 0;
 
 var tileElems = [];
 var score = 0;
@@ -15,7 +16,17 @@ $(function() {
     //bind events
     $('body').keypress(keyPressed);
     $('.new-game').click(newGame);
+    $('.tile-fixed').click(obstaclesSelect);
 });
+
+function obstaclesSelect(e) {
+    var elem = $(e.target);
+    $('.tile-selected').removeClass('tile-selected');
+    elem.addClass('tile-selected');
+
+    obstaclesCount = elem.text();
+    newGame();
+}
 
 function keyPressed(e) {
     nextTurn(e.key);
@@ -113,8 +124,11 @@ function nextTurn(direction) {
     }
 }
 
-function tileShowUp(tileX, tileY, value) {
-    var newTile = constructTile(tileX, tileY, value);
+function tileShowUp(tileX, tileY, value, obstacle) {
+    var newTile = constructTile(tileX, tileY, value, obstacle);
+    if(obstacle) {
+        newTile.addClass('tile-obstacle');
+    }
     $('.tile-container').append(newTile);
     tileElems.push(newTile);
 
@@ -132,10 +146,10 @@ function tileShowUp(tileX, tileY, value) {
     return newTile;
 }
 
-function constructTile(tileX, tileY, value) {
+function constructTile(tileX, tileY, value, obstacle) {
     return $('<div></div>')
         .addClass('tile')
-        .addClass('tile-new')
+        .addClass('tile-2')
         .css({
             left: calcPosX(tileX) + tileSize/4,
             top: calcPosY(tileY) + tileSize/4,
@@ -145,10 +159,11 @@ function constructTile(tileX, tileY, value) {
         .data('x', tileX)
         .data('y', tileY)
         .data('val', value)
-        .text(value);
+        .data('obstacle', obstacle ? obstacle : false)
+        .text(obstacle ? '' : value);
 }
 
-function newTile() {
+function newTile(obstacle) {
     var tiles = mapTiles();
 
     //collect empty tiles
@@ -161,17 +176,24 @@ function newTile() {
         }
     }
     var tileId = Math.floor(Math.random() * freeTiles.length);
-    return tileShowUp(freeTiles[tileId].x, freeTiles[tileId].y, startTile);
+    return tileShowUp(freeTiles[tileId].x, freeTiles[tileId].y, startTile, obstacle);
 }
 
 function newGame() {
     $('.tile-container').children().remove();
     tileElems = [];
     score = 0;
+    $('.score-value').text(0);
     gameOn = true;
+
+    //add obstacles
+    for(var i = 0; i < obstaclesCount; i++) {
+        newTile(true);
+    }
 
     newTile();
     newTile();
+
 }
 
 //shift tiles
@@ -194,18 +216,21 @@ function shiftUp(rotations) {
 
     for(var x = 0; x < fieldTileCount; x++) {
         for(var y = 0; y < fieldTileCount; y++) {
-            if(tiles[x][y].value != 0) {
+            if(tiles[x][y].value != 0 && !tiles[x][y].obstacle) {
                 //find limit
                 var limit = -1;
                 for(var endY = y-1; endY >= 0;  endY--) {
-                    if(tiles[x][endY].value != 0) {
+                    if(tiles[x][endY].value != 0 || tiles[x][endY].obstacle) {
                         limit = endY;
                         break;
                     }
                 }
 
                 //push up
-                if(limit >= 0 && (tiles[x][limit].value != tiles[x][y].value || tiles[x][limit].merged)) //cannot merge?
+                if(limit >= 0 && (tiles[x][limit].value != tiles[x][y].value
+                                    || tiles[x][limit].merged
+                                    || tiles[x][limit].obstacle)
+                  ) //cannot merge?
                     limit++;
                 if(limit == -1)
                     limit = 0;
@@ -310,10 +335,10 @@ function calcPosY(tileY) {
 
 function emptyTileArray() {
     var tiles = [];
-    for(var i = 0; i < 5; i++) {
+    for(var i = 0; i < fieldTileCount; i++) {
         tiles.push([]);
-        for(var j = 0; j < 5; j++) {
-            tiles[i].push({value: 0, elem: null});
+        for(var j = 0; j < fieldTileCount; j++) {
+            tiles[i].push({value: 0, elem: null, obstacle: false});
         }
     }
     return tiles;
@@ -327,7 +352,8 @@ function mapTiles() {
         var y = tileElems[i].data('y');
         tiles[x][y] = {
             value: tileElems[i].data('val'),
-            elem: tileElems[i]
+            elem: tileElems[i],
+            obstacle: tileElems[i].data('obstacle')
         };
     }
     return tiles;

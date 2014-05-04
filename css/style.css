@@ -69,12 +69,8 @@ body {
     z-index: 2;
 }
 
-.tile-new {
-    background-color: #b9de31;
-}
-
 .tile-2 {
-    background-color: #cfde2f;
+    background-color: #b9de31;
 }
 
 .tile-4 {
@@ -107,6 +103,32 @@ body {
 
 .tile-512 {
     background-color: #de7d82
+}
+
+.tile-obstacle {
+    background-color: #b5b278;
+    box-shadow: none;
+    border: none;
+}
+
+/*Obstacles count*/
+
+.obstacle-header {
+    font-size: 21px;
+}
+
+.tile-fixed {
+    position: relative;
+    float: left;
+    margin: 2px 2px 10px;
+}
+
+.obstacle-row {
+    margin: 6px;
+}
+
+.tile-selected {
+    background-color: #d9bb16;
 }
 
 .new-game:hover {
