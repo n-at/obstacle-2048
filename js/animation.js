@@ -14,7 +14,7 @@ var gameOn = false;
 $(function() {
    newGame();
     //bind events
-    $('body').keypress(keyPressed);
+    $(document).keydown(keyPressed);
     $('.new-game').click(newGame);
     $('.tile-fixed').click(obstaclesSelect);
 });
@@ -29,7 +29,25 @@ function obstaclesSelect(e) {
 }
 
 function keyPressed(e) {
-    nextTurn(e.key);
+    var map = {
+        38: 'Up',
+        39: 'Right',
+        40: 'Down',
+        37: 'Left',
+        75: 'Up',
+        76: 'Right',
+        74: 'Down',
+        72: 'Left',
+        87: 'Up',
+        68: 'Right',
+        83: 'Down',
+        65: 'Left'
+    };
+    var mapped = map[e.which];
+    if(mapped != undefined) {
+        e.preventDefault();
+        nextTurn(map[e.keyCode]);
+    }
 }
 
 function nextTurn(direction) {
