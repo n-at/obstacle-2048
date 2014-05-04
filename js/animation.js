@@ -73,7 +73,7 @@ function nextTurn(direction) {
 
     //do animations and collect stacks of tiles
     var x, y, i, elem;
-    var tiles = emptyTileArray();
+    var tiles = tileStacks();
     for(i = 0; i < tileElems.length; i++) {
         elem = tileElems[i];
         x = elem.data('x');
@@ -85,20 +85,18 @@ function nextTurn(direction) {
             top: calcPosY(y)
         }, animationSpeed);
 
-        //push the tile to stack
-        if(!tiles[x][y].elem)
-            tiles[x][y].elem = [];
-        tiles[x][y].elem.push(elem);
+        //push the tile to the stack
+        tiles[x][y].push(elem);
     }
 
     //process stacks
     var removeElement = function() { $(this).remove(); };
     for(x = 0; x < fieldTileCount; x++) {
         for(y = 0; y < fieldTileCount; y++) {
-            if(tiles[x][y].elem && tiles[x][y].elem.length > 1) {
+            if(tiles[x][y].length > 1) {
                 var sum = 0;
-                for(i = 0; i < tiles[x][y].elem.length; i++) {
-                    elem = tiles[x][y].elem[i];
+                for(i = 0; i < tiles[x][y].length; i++) {
+                    elem = tiles[x][y][i];
                     sum += elem.data('val');
 
                     //remove tile
@@ -106,17 +104,8 @@ function nextTurn(direction) {
                 }
                 //create new tile with sum
                 var sumTile = tileShowUp(x, y, sum);
-
-                //choose color for new tile
-                for(i = 2; i <= 256; i *= 2) {
-                    if(sum < i) {
-                        i /= 2;
-                        break;
-                    }
-                }
-                sumTile.addClass('tile-' + i);
-
-                tiles[x][y].elem = [sumTile];
+                sumTile.addClass(tileStyle(sum));
+                tiles[x][y] = [sumTile];
             }
         }
     }
@@ -125,8 +114,8 @@ function nextTurn(direction) {
     var newTiles = [];
     for(x = 0; x < fieldTileCount; x++) {
         for(y = 0; y < fieldTileCount; y++) {
-            if(tiles[x][y].elem && tiles[x][y].elem.length > 0) {
-                newTiles.push(tiles[x][y].elem[0]);
+            if(tiles[x][y].length > 0) {
+                newTiles.push(tiles[x][y][0]);
             }
         }
     }
@@ -135,7 +124,7 @@ function nextTurn(direction) {
     //push new tile
     newTile();
 
-    //check for end of game
+    //check for end of the game
     if(!hasNextMove()) {
         gameOn = false;
         endGame();
@@ -375,4 +364,25 @@ function mapTiles() {
         };
     }
     return tiles;
+}
+
+function tileStacks() {
+    var tiles = [];
+    for(var i = 0; i < fieldTileCount; i++) {
+        tiles.push([]);
+        for(var j = 0; j < fieldTileCount; j++) {
+            tiles[i].push([]);
+        }
+    }
+    return tiles;
+}
+
+function tileStyle(value) {
+    for(var i = 2; i <= 256; i *= 2) {
+        if(value < i) {
+            i /= 2;
+            break;
+        }
+    }
+    return 'tile-' + i;
 }
