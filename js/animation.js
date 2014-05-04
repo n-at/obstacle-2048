@@ -7,6 +7,8 @@ var startTile = 2;
 var animationSpeed = 250;
 
 var tileElems = [];
+var score = 0;
+var gameOn = false;
 
 $(function() {
    newGame();
@@ -21,6 +23,8 @@ function keyPressed(e) {
 }
 
 function nextTurn(direction) {
+    if(!gameOn) return ;
+
     var turn = false;
     switch(direction) {
         case 'Up':
@@ -73,6 +77,7 @@ function nextTurn(direction) {
                 //create new tile with sum
                 var sumTile = tileShowUp(x, y, sum);
 
+                //choose color for new tile
                 for(i = 2; i <= 256; i *= 2) {
                     if(sum < i) {
                         i /= 2;
@@ -99,6 +104,12 @@ function nextTurn(direction) {
 
     //push new tile
     newTile();
+
+    //check for end of game
+    if(!hasNextMove()) {
+        gameOn = false;
+        endGame();
+    }
 }
 
 function tileShowUp(tileX, tileY, value) {
@@ -155,6 +166,8 @@ function newTile() {
 function newGame() {
     $('.tile-container').children().remove();
     tileElems = [];
+    score = 0;
+    gameOn = true;
 
     newTile();
     newTile();
@@ -162,6 +175,7 @@ function newGame() {
 
 function shiftUp(rotations) {
     var turn = false;
+    var scoreToAdd = 0;
     var tiles = mapTiles();
 
     //rotate tiles array (cw)
@@ -198,6 +212,7 @@ function shiftUp(rotations) {
 
                 if(tiles[x][limit].value) {
                     tiles[x][limit].combined = true;
+                    scoreToAdd += tiles[x][limit].value * 2;
                 }
                 tiles[x][limit].value += tiles[x][y].value;
                 tiles[x][y].value = 0;
@@ -222,7 +237,66 @@ function shiftUp(rotations) {
             }
         }
     }
+    addScore(scoreToAdd);
     return turn;
+}
+
+function addScore(value) {
+    if(value == 0) {
+        return;
+    }
+    score += value;
+    $('.score-value').text(score);
+}
+
+function hasNextMove() {
+    var tiles = mapTiles();
+    var has2048 = false;
+    var hasEmpty = false;
+    var hasMove = false;
+
+    for(var x = 0; x < fieldTileCount; x++) {
+        for(var y = 0; y < fieldTileCount; y++) {
+            if(tiles[x][y].value == 0) {
+                hasEmpty = true;
+            }
+            if(tiles[x][y].value == 2048) {
+                has2048 = true;
+            }
+            if(x+1 < fieldTileCount && tiles[x][y].value != 0) {
+                if(tiles[x][y].value == tiles[x+1][y].value) {
+                    hasMove = true;
+                }
+            }
+            if(y+1 < fieldTileCount && tiles[x][y].value != 0) {
+                if(tiles[x][y].value == tiles[x][y+1].value) {
+                    hasMove = true;
+                }
+            }
+        }
+    }
+    if(has2048) return false; //win
+    return hasEmpty || hasMove;
+}
+
+function endGame() {
+    //win?
+    var tiles = mapTiles();
+    var has2048 = false;
+    for(var x = 0; x < fieldTileCount; x++) {
+        for(var y = 0; y < fieldTileCount; y++) {
+            if(tiles[x][y].value == 2048) {
+                has2048 = true;
+            }
+        }
+    }
+
+    var message = $('<span></span>').addClass('end-game-message').text('Game over');
+    if(has2048) {
+        message.addClass('win-message').text('You win!');
+    }
+
+    $('<div></div>').addClass('end-game-screen').appendTo('.tile-container').append(message);
 }
 
 //utility
