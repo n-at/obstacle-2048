@@ -38,8 +38,8 @@ body {
     text-align: center;
 }
 
-.new-game {
-    width: 100px;
+.game-button {
+    width: 130px;
     height: 25px;
     margin: 5px;
 
@@ -49,6 +49,14 @@ body {
 
     font-family: Arial, Helvetica, sans-serif;
     color: #59563b;
+}
+
+.game-button:hover {
+    background-color: #e8e0bc;
+}
+
+.game-button-toggle {
+    background-color: #d9bb16;
 }
 
 .tile {
@@ -129,10 +137,6 @@ body {
 
 .tile-selected {
     background-color: #d9bb16;
-}
-
-.new-game:hover {
-    background-color: #e8e0bc;
 }
 
 .text-center {

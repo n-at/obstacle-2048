@@ -6,6 +6,7 @@ var fieldTileCount = 5;
 var startTile = 2;
 var animationSpeed = 150;
 var obstaclesCount = 0;
+var classicGame = false;
 
 var tileElems = [];
 var score = 0;
@@ -15,7 +16,8 @@ $(function() {
    newGame();
     //bind events
     $(document).keydown(keyPressed);
-    $('.new-game').click(newGame);
+    $('#new-game').click(newGame);
+    $('#classic-game').click(classicGameToggle);
     $('.tile-fixed').click(obstaclesSelect);
     bindTouchEvents();
 });
@@ -26,6 +28,12 @@ function obstaclesSelect(e) {
     elem.addClass('tile-selected');
 
     obstaclesCount = elem.text();
+    newGame();
+}
+
+function classicGameToggle() {
+    classicGame = !classicGame;
+    $('#classic-game').toggleClass('game-button-toggle');
     newGame();
 }
 
@@ -257,7 +265,7 @@ function newTile(obstacle) {
     var freeTiles = [];
     for(var x = 0; x < fieldTileCount; x++) {
         for(var y = 0 ; y < fieldTileCount; y++) {
-            if(tiles[x][y].value === 0) {
+            if(tiles[x][y].value === 0 && !tiles[x][y].obstacle) {
                 freeTiles.push({x: x, y: y});
             }
         }
@@ -273,8 +281,16 @@ function newGame() {
     $('.score-value').text(0);
     gameOn = true;
 
+    if(classicGame) {
+        for(var i = 0; i < fieldTileCount; i++) {
+            tileShowUp(i, 0, startTile, true);
+            if(i)
+                tileShowUp(0, i, startTile, true);
+        }
+    }
+
     //add obstacles
-    for(var i = 0; i < obstaclesCount; i++) {
+    for(i = 0; i < obstaclesCount; i++) {
         newTile(true);
     }
 
