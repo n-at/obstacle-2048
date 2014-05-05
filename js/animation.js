@@ -76,8 +76,8 @@ function bindTouchEvents() {
             touchEndX = e.pageX;
             touchEndY = e.pageY;
         } else {
-            touchEndX = e.touches[0].clientX;
-            touchEndY = e.touches[0].clientY;
+            touchEndX = e.changedTouches[0].clientX;
+            touchEndY = e.changedTouches[0].clientY;
         }
 
         var dx = touchEndX - touchX;
