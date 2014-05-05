@@ -17,6 +17,7 @@ $(function() {
     $(document).keydown(keyPressed);
     $('.new-game').click(newGame);
     $('.tile-fixed').click(obstaclesSelect);
+    bindTouchEvents();
 });
 
 function obstaclesSelect(e) {
@@ -26,6 +27,84 @@ function obstaclesSelect(e) {
 
     obstaclesCount = elem.text();
     newGame();
+}
+
+function bindTouchEvents() {
+    var touchEvents;
+    if(window.navigator.msPointerEnabled) {
+        touchEvents = {
+            touchStart: 'MSPointerDown',
+            touchMove: 'MSPointerMove',
+            touchEnd: 'MSPointerUp'
+        }
+    } else {
+        touchEvents = {
+            touchStart: 'touchstart',
+            touchMove: 'touchmove',
+            touchEnd: 'touchend'
+        }
+    }
+
+    var touchX, touchY;
+
+    var gameGrid = document.getElementsByClassName('game-grid')[0];
+
+    gameGrid.addEventListener(touchEvents.touchStart, function(e) {
+        if ((!window.navigator.msPointerEnabled && e.touches.length > 1) || e.targetTouches > 1) {
+            return;
+        }
+        if (window.navigator.msPointerEnabled) {
+            touchX = e.pageX;
+            touchY = e.pageY;
+        } else {
+            touchX = e.touches[0].clientX;
+            touchY = e.touches[0].clientY;
+        }
+        e.preventDefault();
+    });
+
+    gameGrid.addEventListener(touchEvents.touchMove, function(e) {
+        e.preventDefault();
+    });
+
+    gameGrid.addEventListener(touchEvents.touchEnd, function(e) {
+        if ((!window.navigator.msPointerEnabled && e.touches.length > 1) || e.targetTouches > 1) {
+            return;
+        }
+        var touchEndX, touchEndY;
+        if (window.navigator.msPointerEnabled) {
+            touchEndX = e.pageX;
+            touchEndY = e.pageY;
+        } else {
+            touchEndX = e.touches[0].clientX;
+            touchEndY = e.touches[0].clientY;
+        }
+
+        var dx = touchEndX - touchX;
+        var dy = touchEndY - touchY;
+        var absdx = Math.abs(dx);
+        var absdy = Math.abs(dy);
+
+        if(Math.max(absdx, absdy) > 10) {
+            var direction;
+
+            if(absdx > absdy) {
+                if(dx > 0) {
+                    direction = 'Right';
+                } else {
+                    direction = 'Left';
+                }
+            } else {
+                if(dy > 0) {
+                    direction = 'Down';
+                } else {
+                    direction = 'Up';
+                }
+            }
+
+            nextTurn(direction);
+        }
+    });
 }
 
 function keyPressed(e) {
