@@ -68,7 +68,7 @@ function bindTouchEvents() {
     });
 
     gameGrid.addEventListener(touchEvents.touchEnd, function(e) {
-        if ((!window.navigator.msPointerEnabled && e.touches.length > 1) || e.targetTouches > 1) {
+        if ((!window.navigator.msPointerEnabled && e.touches.length > 0) || e.targetTouches > 0) {
             return;
         }
         var touchEndX, touchEndY;
