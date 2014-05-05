@@ -283,9 +283,9 @@ function newGame() {
 
     if(classicGame) {
         for(var i = 0; i < fieldTileCount; i++) {
-            tileShowUp(i, 0, startTile, true);
-            if(i)
-                tileShowUp(0, i, startTile, true);
+            tileShowUp(i, fieldTileCount-1, startTile, true);
+            if(i != fieldTileCount-1)
+                tileShowUp(fieldTileCount-1, i, startTile, true);
         }
     }
 
