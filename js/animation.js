@@ -167,6 +167,7 @@ function nextTurn(direction) {
         y = elem.data('y');
 
         //animate tile's shift
+        elem.finish(); //stop previous animation
         elem.animate({
             left: calcPosX(x),
             top: calcPosY(y)
@@ -187,6 +188,7 @@ function nextTurn(direction) {
                     sum += elem.data('val');
 
                     //remove tile
+                    elem.finish();
                     elem.fadeOut(animationSpeed, removeElement());
                 }
                 //create new tile with sum
