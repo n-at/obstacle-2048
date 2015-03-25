@@ -462,7 +462,7 @@ function tileStacks() {
 }
 
 function tileStyle(value) {
-    for(var i = 2; i <= 256; i *= 2) {
+    for(var i = 2; i <= 128; i *= 2) {
         if(value < i) {
             i /= 2;
             break;
