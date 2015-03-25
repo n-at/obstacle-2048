@@ -1,0 +1,232 @@
+@body-background-color: white;
+@body-font-color: #413a66;
+@body-font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial, serif;
+
+@cell-size: 100px;
+@cell-margin: 2px;
+@cell-offset: 6px;
+@cell-border-radius: 5px;
+@cell-shadow-size: 2px;
+@cell-shadow-color: rgba(0, 0, 0, 0.25);
+@cell-background-color: #f5f5f5;
+
+@grid-body-color: #eaeaea;
+@grid-border-color: darken(@grid-body-color, 30%);
+@grid-size: @cell-size * 5 + @cell-offset * 2 + @cell-margin * 10 + 2px;
+@grid-border-size: 1px;
+@grid-vertical-margin: 10px;
+
+@tile-border-color: @grid-border-color;
+@tile-font-height: 40px;
+@tile-font-color: #59563b;
+@tile-font-family: @body-font-family;
+@tile-shadow-color: @cell-shadow-color;
+@tile-shadow-size: @cell-shadow-size;
+
+@tile-spin-amount: -10;
+@tile-2: #bde231;
+@tile-4: spin(@tile-2, @tile-spin-amount);
+@tile-8: spin(@tile-2, @tile-spin-amount*2);
+@tile-16: spin(@tile-2, @tile-spin-amount*3);
+@tile-32: spin(@tile-2, @tile-spin-amount*4);
+@tile-64: spin(@tile-2, @tile-spin-amount*5);
+@tile-128: spin(@tile-2, @tile-spin-amount*6);
+@tile-256: spin(@tile-2, @tile-spin-amount*7);
+@tile-obstacle: @grid-body-color;
+
+@header-font-size: 3em;
+@header-font-color: @body-font-color;
+@header-font-family: @body-font-family;
+
+@game-button-font-color: @body-font-color;
+@game-button-font-family: @body-font-family;
+@game-button-font-size: 16px;
+@game-button-background-color: @tile-2;
+@game-button-background-hover: lighten(@game-button-background-color, 10%);
+@game-button-background-toggle: darken(@game-button-background-color, 10%);
+@game-button-border-color: darken(@game-button-background-color, 10%);
+@game-button-width: 130px;
+@game-button-height: 30px;
+@game-button-border-width: 2px;
+
+///////////////////////////////////////////////////////////////////////////////
+
+body {
+  background-color: @body-background-color;
+  color: @body-font-color;
+  font-family: @body-font-family;
+}
+
+.header {
+  margin-bottom: 20px;
+  text-align: center;
+
+  font-family: @header-font-family;
+  font-size: @header-font-size;
+
+  color: @header-font-color;
+}
+
+.game-grid {
+  position: relative;
+  box-sizing: border-box;
+
+  width: @grid-size;
+  height: @grid-size;
+  margin: @grid-vertical-margin auto;
+
+  border-radius: @cell-border-radius;
+  border: @grid-border-size solid @grid-border-color;
+
+  background-color: @grid-body-color;
+
+  .grid-cell {
+    position: relative;
+    float: left;
+    z-index: 1;
+
+    top: @cell-offset;
+    left: @cell-offset;
+    width: @cell-size;
+    height: @cell-size;
+    margin: @cell-margin;
+
+    border-radius: @cell-border-radius;
+    background-color: @cell-background-color;
+    box-shadow: 0 0 @cell-shadow-size @cell-shadow-size @cell-shadow-color inset;
+  }
+
+  .tile-container {
+    position: absolute;
+  }
+}
+
+.tile {
+  position: absolute;
+  z-index: 2;
+
+  width: @cell-size;
+  height: @cell-size;
+
+  border-radius: @cell-border-radius;
+  border-color: @tile-border-color;
+  box-shadow: 0 0 @tile-shadow-size @tile-shadow-size @tile-shadow-color inset;
+
+  font-size: @tile-font-height;
+  font-family: @tile-font-family;
+  text-align: center;
+  color: @tile-font-color;
+  line-height: @cell-size;
+
+  &.tile-2 { background-color: @tile-2; }
+  &.tile-4 { background-color: @tile-4; }
+  &.tile-8 { background-color: @tile-8; }
+  &.tile-16 { background-color: @tile-16; }
+  &.tile-32 { background-color: @tile-32; }
+  &.tile-64 { background-color: @tile-64 }
+  &.tile-128 { background-color: @tile-128 }
+  &.tile-256 { background-color: @tile-256 }
+
+  &.tile-obstacle {
+    background-color: @tile-obstacle;
+    box-shadow: none;
+    border: none;
+  }
+}
+
+.game-button {
+  min-width: @game-button-width;
+  min-height: @game-button-height;
+  margin: 5px;
+
+  border: @game-button-border-width solid @game-button-border-color;
+  border-radius: @cell-border-radius;
+  background-color: @game-button-background-color;
+
+  font-family: @game-button-font-family;
+  font-size: @game-button-font-size;
+  color: @game-button-font-color;
+
+  &:hover { background-color: @game-button-background-hover; }
+  &.game-button-toggle { background-color: @game-button-background-toggle; }
+}
+
+/*Obstacles count*/
+
+.obstacle-header {
+  font-size: 21px;
+}
+
+.tile-fixed {
+  position: relative;
+  float: left;
+  margin: 2px 2px 10px;
+}
+
+.obstacle-row {
+  margin: 6px;
+}
+
+.tile-selected {
+  background-color: #d9bb16;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.game-field {
+  position: relative;
+  box-sizing: border-box;
+  width: 534px;
+  height: 30px;
+  margin: 10px auto;
+
+  font-family: Arial, Helvetica, sans-serif;
+  color: #59563b;
+}
+
+.score {
+  float: right;
+
+  font-size: 24px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  color: #59563b;
+}
+
+.score-value {
+  font-size: 24px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  color: #a19e74;
+}
+
+.end-game-screen {
+  position: absolute;
+  width: 534px;
+  height: 534px;
+  border-radius: 3px;
+  border-color: #a29f6f;
+  background-color: rgba(161, 158, 116, 0.80);
+  z-index: 5;
+  text-align: center;
+}
+
+.end-game-message {
+  font-size: 40px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  text-align: center;
+  color: #59563b;
+  line-height: 500px;
+}
+
+.win-message {
+  color: #d8e72f;
+}
+
+hr {
+  color: #a29f6f;
+  border-style: solid;
+}
