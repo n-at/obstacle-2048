@@ -49,6 +49,21 @@
 @game-button-height: 30px;
 @game-button-border-width: 2px;
 
+@obstacle-tile-selected-color: @tile-2;
+
+@score-font-family: @body-font-family;
+@score-font-size: 24px;
+@score-font-color: @body-font-color;
+@score-number-font-color: darken(@tile-2, 5%);
+
+@endgame-border-color: @grid-border-color;
+@endgame-background-color: rgba(0, 0, 0, .5);
+@endgame-font-color: white;
+@endgame-font-size: 40px;
+@endgame-font-family: @body-font-family;
+@endgame-win-font-color: @tile-2;
+
+@hr-color: @body-font-color;
 ///////////////////////////////////////////////////////////////////////////////
 
 body {
@@ -155,6 +170,7 @@ body {
 
 .obstacle-header {
   font-size: 21px;
+  margin-bottom: 5px;
 }
 
 .tile-fixed {
@@ -168,7 +184,7 @@ body {
 }
 
 .tile-selected {
-  background-color: #d9bb16;
+  background-color: @obstacle-tile-selected-color;
 }
 
 .text-center {
@@ -178,55 +194,50 @@ body {
 .game-field {
   position: relative;
   box-sizing: border-box;
-  width: 534px;
+  width: @grid-size;
   height: 30px;
   margin: 10px auto;
-
-  font-family: Arial, Helvetica, sans-serif;
-  color: #59563b;
 }
 
 .score {
   float: right;
 
-  font-size: 24px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: bold;
-  color: #59563b;
+  font-size: @score-font-size;
+  font-family: @score-font-family;
+  color: @score-font-color;
+
+  .score-value {
+    color: @score-number-font-color;
+  }
 }
 
-.score-value {
-  font-size: 24px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: bold;
-  color: #a19e74;
-}
+//endgame
 
 .end-game-screen {
   position: absolute;
-  width: 534px;
-  height: 534px;
-  border-radius: 3px;
-  border-color: #a29f6f;
-  background-color: rgba(161, 158, 116, 0.80);
   z-index: 5;
   text-align: center;
-}
 
-.end-game-message {
-  font-size: 40px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: bold;
-  text-align: center;
-  color: #59563b;
-  line-height: 500px;
-}
+  width: @grid-size;
+  height: @grid-size;
 
-.win-message {
-  color: #d8e72f;
+  border-radius: @cell-border-radius;
+  border-color: @endgame-border-color;
+  background-color: @endgame-background-color;
+
+  .end-game-message {
+    font-size: @endgame-font-size;
+    font-family: @endgame-font-family;
+    text-align: center;
+    color: @endgame-font-color;
+    line-height: @grid-size;
+  }
+
+  .win-message {
+    color: @endgame-win-font-color;
+  }
 }
 
 hr {
-  color: #a29f6f;
-  border-style: solid;
+  color: @hr-color;
 }
